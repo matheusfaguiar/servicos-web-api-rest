@@ -1,0 +1,30 @@
+# Arquivos do IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.classpath
+.project
+.settings/
+bin/
+*.swp
+*.swo
+
+# Arquivos do Maven
+target/
+log/
+
+# Arquivos do Spring Boot
+application.properties
+application-dev.properties
+
+# Banco de dados H2 (se estiver usando)
+*.db
+*.trace.db
+
+# Outros
+*.jar
+*.war
+*.ear
+*.class
+*.log
