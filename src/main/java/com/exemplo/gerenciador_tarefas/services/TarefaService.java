@@ -40,17 +40,6 @@ public class TarefaService {
     }
 
     /**
-     * Cria uma nova tarefa
-     * @param tarefa Dados da tarefa a ser criada
-     * @return Tarefa salva
-     */
-    @Transactional
-    public Tarefa criarTarefa(Tarefa tarefa) {
-        tarefa.setDataCriacao(LocalDateTime.now());
-        return tarefaRepository.save(tarefa);
-    }
-
-    /**
      * Atualiza uma tarefa existente
      * @param id ID da tarefa a ser atualizada
      * @param tarefaAtualizada Dados atualizados da tarefa
@@ -74,8 +63,13 @@ public class TarefaService {
      */
     @Transactional
     public void excluirTarefa(Long id) {
+        boolean existe = tarefaRepository.existsById(id);
+        if (!existe) {
+            throw new RuntimeException("Tarefa com id " + id + " não encontrada");
+        }
         tarefaRepository.deleteById(id);
     }
+
 
     /**
      * Marca uma tarefa como concluída
@@ -127,4 +121,24 @@ public class TarefaService {
             })
             .orElseThrow(() -> new RuntimeException("Tarefa não encontrada com o ID: " + id));
     }
+
+    @Transactional
+    public List<TarefaResponseDTO> criarTarefasEmLote(List<TarefaRequestDTO> tarefasDTO) {
+        List<Tarefa> tarefas = tarefasDTO.stream()
+            .map(dto -> {
+                Tarefa tarefa = new Tarefa();
+                tarefa.setDescricao(dto.getDescricao());
+                tarefa.setConcluida(dto.isConcluida());
+                tarefa.setDataCriacao(LocalDateTime.now());
+                return tarefa;
+            })
+            .toList();
+
+        List<Tarefa> tarefasSalvas = tarefaRepository.saveAll(tarefas);
+
+        return tarefasSalvas.stream()
+            .map(TarefaResponseDTO::new)
+            .toList();
+    }
+
 }

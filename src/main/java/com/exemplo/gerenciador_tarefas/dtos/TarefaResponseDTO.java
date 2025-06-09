@@ -1,9 +1,13 @@
-package com.exemplo.gerenciador_tarefas.dto;
+package com.exemplo.gerenciador_tarefas.dtos;
 
 import com.exemplo.gerenciador_tarefas.entities.Tarefa;
+
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class TarefaResponseDTO {
+
     private Long id;
     private String descricao;
     private boolean concluida;
@@ -18,7 +22,13 @@ public class TarefaResponseDTO {
         this.dataConclusao = tarefa.getDataConclusao();
     }
 
-    // Getters
+    public static List<TarefaResponseDTO> converter(List<Tarefa> tarefas) {
+        return tarefas.stream()
+                .map(TarefaResponseDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    // Getters (pode incluir setters se necessário)
     public Long getId() {
         return id;
     }
