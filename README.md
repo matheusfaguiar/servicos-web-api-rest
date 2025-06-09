@@ -1,156 +1,135 @@
-# Serviços Web e API REST - Gerenciador de Tarefas
+# 📝 Gerenciador de Tarefas - API RESTful
 
-API RESTful para gerenciamento de tarefas pessoais desenvolvida com Spring Boot.
+API RESTful para gerenciamento de tarefas pessoais desenvolvida com Spring Boot, com tratamento avançado de erros e documentação automatizada via Swagger.
 
-## 📋 Visão Geral
 
-Este projeto implementa um sistema completo de gerenciamento de tarefas com operações CRUD e suporte a criação em lote, utilizando DTOs para transferência de dados.
-
-## 🚀 Tecnologias
-
-- Java 24.0.1
-- Spring Boot 3.5.0
+## 🚀 Tecnologias Utilizadas
+- Java 17
+- Spring Boot 3.2.6
 - Spring Data JPA
-- H2 Database (ambiente de desenvolvimento)
+- H2 Database (banco em memória para desenvolvimento)
 - Maven
-- Git/GitHub
+- SpringDoc OpenAPI 2.3.0 (Documentação)
+- Spring Validation (Validação de dados)
+
 
 ## 🏗️ Estrutura do Projeto
 ```
-servicos-web-api-rest/
+gerenciador-tarefas/
 ├── src/
-│ ├── main/
-│ │ ├── java/com/exemplo/gerenciador_tarefas/
-│ │ │ ├── controllers/ # Controladores REST
-│ │ │ ├── dtos/ # 
-│ │ │ ├── entities/ # Entidades JPA
-│ │ │ ├── repositories/ # Interfaces de repositório
-│ │ │ ├── services/ # Lógica de negócio
-│ │ │ └── GerenciadorTarefasApplication.java
-│ │ └── resources/
-│ │ │ ├── application.properties # Configurações
+│   ├── main/
+│   │   ├── java/com/exemplo/gerenciador_tarefas/
+│   │   │   ├── controllers/       
+│   │   │   ├── dtos/             
+│   │   │   ├── entities/         
+│   │   │   ├── exceptions/        # Tratamento de exceções
+│   │   │   ├── repositories/      # Interfaces Spring Data JPA
+│   │   │   ├── services/          # Lógica de negócio
+│   │   │   └── GerenciadorTarefasApplication.java
+│   │   └── resources/
+│   │       ├── application.properties # Configurações
+│   │       ├── data.sql           # Dados iniciais
+│   │       └── schema.sql        # Schema do banco
+├── target/
 ├── .gitignore
-├── pom.xml # Dependências Maven
+├── pom.xml
+├── HELP.md
+└── README.md
 ```
 
+## 📡 Documentação da API (Swagger UI)
 
-## 📡 Documentação da API
-
-### Endpoints Principais
-
-#### 1. Listar todas as tarefas: GET /api/tarefas
+Acesse a documentação interativa em:
+http://localhost:8080/swagger-ui.html
 
 
-**Resposta de Sucesso (200 OK):**
-```json
-[
-    {
-        "id": 1,
-        "descricao": "Fazer compras",
-        "concluida": false,
-        "dataCriacao": "2023-11-20T10:00:00",
-        "dataConclusao": null
-    }
-]
-```
+## 🌐 Endpoints da API (v1)
 
-#### 2. Obter uma tarefa específica: GET /api/tarefas/{id}
+### TarefaController
+|Método	  |Endpoint	   |Descrição |
+|---------|------------|----------|
+GET |	/api/v1/tarefas	| Lista todas as tarefas
+GET	|/api/v1/tarefas/{id}	| Obtém uma tarefa específica
+POST |	/api/v1/tarefas	| Cria uma nova tarefa
+POST |	/api/v1/tarefas/batch|	Cria múltiplas tarefas em lote
+PUT	| /api/v1/tarefas/{id}	| Atualiza uma tarefa existente
+DELETE	| /api/v1/tarefas/{id}	| Remove uma tarefa
 
-Parâmetros:
-
-    id (path) - ID da tarefa
-
-Respostas:
-
-    200 OK - Tarefa encontrada
-
-    404 Not Found - Tarefa não encontrada
-
-#### 3. Criar nova tarefa: POST /api/tarefas
-
-Corpo da Requisição:
-```json
-
-{
-    "descricao": "Nova tarefa",
-    "concluida": false
-}
-```
-
-Respostas:
-
-    201 Created - Tarefa criada com sucesso
-
-    400 Bad Request - Dados inválidos
-
-#### 4. Atualizar tarefa existente: PUT /api/tarefas/{id}
-
-Parâmetros:
-
-    id (path) - ID da tarefa
-
-Corpo da Requisição:
-```json
-
-{
-    "descricao": "Tarefa atualizada",
-    "concluida": true
-}
-```
-
-#### 5. Criar múltiplas tarefas: POST /api/tarefas/batch
-
-Corpo da Requisição:
-```json
-
-[
-    {
-        "descricao": "Tarefa 1"
-    },
-    {
-        "descricao": "Tarefa 2",
-        "concluida": true
-    }
-]
-```
-
-#### 6. Deletar tarefa: DELETE /api/tarefas/{id}
-
-Respostas:
-
-    204 No Content - Tarefa removida com sucesso
-
-    404 Not Found - Tarefa não encontrada
 
 ## 🛠️ Como Executar
-
-Clone o repositório:
-
+Pré-requisitos:
+- Java 17 instalado
+- Maven instalado
+- Clone e execute:
 ```bash
 
-git clone https://github.com/matheusfaguiar/servicos-web-api-rest.git
+    git clone https://github.com/matheusfaguiar/servicos-web-api-rest.git
+    cd servicos-web-api-rest
+    mvn spring-boot:run
 ```
-Execute o projeto:
+Acesse a aplicação:
+- API: http://localhost:8080/api/v1/tarefas
+- Swagger UI: http://localhost:8080/swagger-ui.html
+ H2 Console: http://localhost:8080/h2-console
 
+## 📊 Configuração do Banco de Dados (H2)
+- URL JDBC: jdbc:h2:mem:taskdb
+- Usuário: sa
+- Senha: (vazia)
+- Console H2: Habilitado em http://localhost:8080/h2-console
+
+
+## 🛡️ Tratamento de Erros
+
+A API retorna respostas padronizadas para erros:
+```json
+{
+  "mensagem": "Tarefa com id 999 não encontrada",
+  "codigo": 404
+}
+```
+
+
+## 📌 Exemplo de Requisições
+
+Criar tarefa:
 ```bash
 
-mvn spring-boot:run
+curl -X POST "http://localhost:8080/api/v1/tarefas" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "descricao": "Estudar Spring Boot",
+    "concluida": false
+  }'
+```
+Listar tarefas:
+
+```bash
+curl "http://localhost:8080/api/v1/tarefas"
 ```
 
-Acesse a API:
+Atualizar tarefa:
+```bash
+curl -X PUT "http://localhost:8080/api/v1/tarefas/1" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "descricao": "Estudar Spring Boot atualizado",
+    "concluida": true
+  }'
+```
 
-http://localhost:8080/api/tarefas
 
-## 📊 Banco de Dados
+## 🔧 Dependências Principais (pom.xml)
+- Spring Boot Starter Web
+- Spring Boot Starter Data JPA
+- Spring Boot Starter Validation
+- H2 Database
+- SpringDoc OpenAPI (Swagger)
+- Spring Boot Starter Test (para testes)
+  
 
-Em desenvolvimento, a aplicação utiliza um banco H2 em memória:
-
-    URL: jdbc:h2:mem:taskdb
-
-    Console: http://localhost:8080/h2-console
-
-    Credenciais:
-
-        User: sa
-
-        Password: (vazio)
+## ⚙️ Configurações Principais (application.properties)
+- Habilitação do H2 Console
+- Configurações JPA/Hibernate
+- Inicialização automática do banco de dados (data.sql e schema.sql)
+- Configurações do Swagger/OpenAPI
